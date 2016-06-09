@@ -10,7 +10,17 @@ var apiSecret = '2543dc1e5b639941577ebb9e9a0427ff'
 
 var app = express();
 
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+app.use('/img', express.static(__dirname + "/img"));
 app.use(bodyParser.json({ limit: '50mb' }))
+
+app.get('/', (req, res) => {
+  fs.readdir('./img', (err, files) => {
+    var file = files[Math.floor(Math.random() * files.length)]
+    res.render('index', { img: '/img/' + file })
+  })
+})
 
 // post an actual image
 app.post('/img', (req, res) => {
